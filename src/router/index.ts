@@ -6,7 +6,14 @@ import { routes } from 'vue-router/auto-routes'
 const staticRoutes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/chat'
+  },
+  {
+    // 通配符路由，必须放在所有路由的最后
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/views/NotFound.vue'), // 指向你的 404 页面组件
+    meta: { title: '页面未找到' }
   }
 ]
 const router = createRouter({

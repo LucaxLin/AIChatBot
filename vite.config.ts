@@ -3,15 +3,16 @@ import { defineConfig } from 'vite'
 import UnoCss from 'unocss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import VueRouter from 'unplugin-vue-router/vite'
 import vue from '@vitejs/plugin-vue'
-
 export default () => {
   return defineConfig({
     plugins: [
       UnoCss(),
       AutoImport({
-        imports: ['vue'],
+        imports: ['vue','pinia'],
+        resolvers: [ElementPlusResolver()],
         dts: 'src/types/auto-imports.d.ts',
         eslintrc: {
           enabled: true // 是否自动修复
@@ -23,6 +24,7 @@ export default () => {
         dts: 'src/types/typed-router.d.ts' // 可选：生成类型声明文件，提升IDE类型提示体验
       }),
       Components({
+        resolvers: [ElementPlusResolver()],
         dts: 'src/types/components.d.ts'
       }),
       vue()

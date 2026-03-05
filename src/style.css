@@ -10,6 +10,10 @@ html {
   font-family: monospace Arial, Helvetica, sans-serif;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 html,
 body,
 #app {
@@ -23,6 +27,35 @@ html.dark {
   background: var(--dark-bg);
   color: #fff;
   --primary-color: #5c73e6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.1s ease-in-out;
+}
+
+a:hover {
+  color: var(--primary-color);
+}
+
+.router-link-active {
+  color: var(--primary-color);
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+
 }
 
 @font-face {
