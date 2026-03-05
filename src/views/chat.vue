@@ -82,7 +82,7 @@ function handleKeyDown(e: KeyboardEvent | Event) {
 const apiKey = ref('')
 const store = useChatBotStore()
 const { currentChatBot } = storeToRefs(store)
-const { state, startStream, stopStream, clear } = useStream()
+const { state, startStream, stopStream } = useStream()
 async function handleSearch() {
   messageList.value.push({ role: 'user', content: prompt.value })
   prompt.value = ''
