@@ -15,7 +15,9 @@
           item.role,
           {
             'animate-fadeIn': item.role === 'assistant',
-            'animate-slideInFromBottom': item.role === 'user'
+            'animate-slideInFromBottom': item.role === 'user',
+            flex: item.role === 'user',
+            'flex-justify-end': item.role === 'user'
           }
         ]"
         v-for="(item, index) in messageList"
@@ -129,7 +131,6 @@ watch(
       &.assistant {
       }
       &.user {
-        text-align: right;
         span {
           display: inline-block;
           border: 1px solid #ccc;
