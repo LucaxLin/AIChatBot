@@ -1,0 +1,35 @@
+:root {
+  --primary-color: #44bd87;
+  --dark-bg: #000;
+}
+
+html {
+  font-size: 16px;
+  height: 100vh;
+  background-color: #fff;
+  font-family: monospace Arial, Helvetica, sans-serif;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  scrollbar-width: none;
+}
+
+html.dark {
+  background: var(--dark-bg);
+  color: #fff;
+  --primary-color: #5c73e6;
+}
+
+@font-face {
+  font-family: Digital;
+  src: url(./assets/font/DS-DIGI.TTF);
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
