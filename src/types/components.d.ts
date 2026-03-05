@@ -18,6 +18,8 @@ declare module 'vue' {
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElInput: typeof import('element-plus/es')['ElInput']
     HelloWorld: typeof import('./../components/HelloWorld.vue')['default']
+    MarkdownMessage: typeof import('./../components/markdownMessage.vue')['default']
+    MdMessage: typeof import('./../components/mdMessage.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SelectChatBot: typeof import('./../components/selectChatBot.vue')['default']

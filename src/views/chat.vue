@@ -18,10 +18,19 @@
             'animate-slideInFromBottom': item.role === 'user'
           }
         ]"
-        v-for="item in messageList"
+        v-for="(item, index) in messageList"
       >
-        <span>{{ item.content }}</span>
+        <template v-if="item.role === 'assistant'">
+          <mdMessage
+            :key="`assistant-${index}`"
+            :content="item.content"
+          ></mdMessage>
+        </template>
+        <template v-else>
+          <span>{{ item.content }}</span>
+        </template>
       </div>
+      <div ref="bottomSentinelRef"></div>
     </div>
     <div class="prompt" p8 b="1 solid rd-8 #ccc" flex="~ items-center gap8">
       <span i-iconoir-terminal flex-shrink-0 size-20></span>
@@ -31,32 +40,87 @@
         placeholder="请输入..."
         @keydown="handleKeyDown"
       ></el-input>
-      <span
-        i-iconoir-send-solid
-        size-20
-        cursor-pointer
-        hover:text-primary
-        transition-delay-100
-        @click="handleSearch"
-      ></span>
+      <div class="actions">
+        <span
+          v-if="!state.isLoading"
+          i-iconoir-send-solid
+          size-20
+          cursor-pointer
+          hover:text-primary
+          transition-delay-100
+          @click="handleSearch"
+        ></span>
+        <span
+          v-else
+          i-material-symbols-stop-circle
+          size-20
+          cursor-pointer
+          hover:text-primary
+          transition-delay-100
+          @click="stopStream()"
+        >
+        </span>
+      </div>
     </div>
   </div>
 </template>
-<script setup>
-const messageList = ref([
-  { role: 'user', content: '你好！...' },
-  { role: 'assistant', content: '我是一个有用的助手' }
-])
+<script setup lang="ts">
+import { useStream, type Message } from '../composables/useStream'
+import { useChatBotStore } from '../store/chatBotStore'
+
+const messageList = ref<Message[]>([])
 const prompt = ref('')
-function handleKeyDown({ key }) {
-  if (key === 'Enter') {
+function handleKeyDown(e: KeyboardEvent | Event) {
+  if (!(e instanceof KeyboardEvent)) {
+    return
+  } else if (e.key === 'Enter') {
     handleSearch()
   }
 }
-function handleSearch() {
+const apiKey = ref('sk-ibrgymbbfgwsqfvgxzrdldgkvcgchbfwzrrkarhdqgcsunna')
+const store = useChatBotStore()
+const { currentChatBot } = storeToRefs(store)
+const { state, startStream, stopStream, clear } = useStream()
+async function handleSearch() {
   messageList.value.push({ role: 'user', content: prompt.value })
   prompt.value = ''
+  const unwatch = watch(
+    () => state.value.fullText,
+    (newFullText) => {
+      if (!newFullText) return
+      // 检查 messageList 的最后一条消息是否是 assistant 的回复
+      const lastMessage = messageList.value[messageList.value.length - 1]
+
+      if (lastMessage && lastMessage.role === 'assistant') {
+        // 如果是，则更新这条消息的内容
+        lastMessage.content = newFullText
+      } else {
+        // 如果不是（例如，这是第一次回复），则添加一条新的 assistant 消息
+        messageList.value.push({ role: 'assistant', content: newFullText })
+      }
+    },
+    { immediate: true } // 立即以当前值触发一次回调
+  )
+  await startStream(apiKey.value, currentChatBot.value.value, messageList.value)
+  unwatch()
+  console.log(messageList.value.length)
 }
+const bottomSentinelRef = ref<HTMLDivElement>()
+const scrollToBottom = () => {
+  if (bottomSentinelRef.value) {
+    bottomSentinelRef.value.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+watch(
+  messageList,
+  () => {
+    // 使用 nextTick 确保 DOM 已经更新
+    nextTick(() => {
+      scrollToBottom()
+    })
+  },
+  { deep: true }
+)
 </script>
 <style scoped lang="scss">
 .chat {
