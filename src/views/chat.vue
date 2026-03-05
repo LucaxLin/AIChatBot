@@ -77,7 +77,7 @@ function handleKeyDown(e: KeyboardEvent | Event) {
     handleSearch()
   }
 }
-const apiKey = ref('sk-ibrgymbbfgwsqfvgxzrdldgkvcgchbfwzrrkarhdqgcsunna')
+const apiKey = ref('')
 const store = useChatBotStore()
 const { currentChatBot } = storeToRefs(store)
 const { state, startStream, stopStream, clear } = useStream()
