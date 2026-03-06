@@ -2,12 +2,31 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/logo-light.png" id="favicon"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>vite-project</title>
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
+    <script>
+      function setFavicon() {
+        const darkThemeMedia = window.matchMedia('(prefers-color-scheme: dark)')
+        const favicon = document.getElementById('favicon')
+
+        if (darkThemeMedia.matches) {
+          // 如果用户使用的是深色模式，则切换到深色模式的favicon
+          favicon.href = 'logo-dark.png'
+        } else {
+          // 否则使用默认的浅色模式favicon
+          favicon.href = 'logo-light.png'
+        }
+      }
+
+      // 初始化时设置一次
+      setFavicon()
+      // 监听系统的主题变化并动态更新favicon
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(setFavicon)
+    </script>
   </body>
 </html>
