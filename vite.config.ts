@@ -35,7 +35,7 @@ export default () => {
       }
     },
     build: {
-      outDir: 'build',
+      outDir: 'dist',
       rollupOptions: {
         output: {
           entryFileNames: 'assets/[name].js',
