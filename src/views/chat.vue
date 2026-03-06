@@ -65,25 +65,33 @@
       </div>
     </div>
   </div>
+  <setTokenDialog ref="setTokenRef" @setToken="updateToken"></setTokenDialog>
 </template>
 <script setup lang="ts">
 import { useStream, type Message } from '../composables/useStream'
 import { useChatBotStore } from '../store/chatBotStore'
-
 const messageList = ref<Message[]>([])
 const prompt = ref('')
 function handleKeyDown(e: KeyboardEvent | Event) {
   if (!(e instanceof KeyboardEvent)) {
     return
   } else if (e.key === 'Enter') {
-    handleSearch()
+    state.value.isLoading ? stopStream() : handleSearch()
   }
 }
 const apiKey = ref('')
+const setTokenRef = ref()
 const store = useChatBotStore()
 const { currentChatBot } = storeToRefs(store)
 const { state, startStream, stopStream } = useStream()
+function updateToken(token: string) {
+  apiKey.value = token
+  handleSearch()
+}
 async function handleSearch() {
+  if (!apiKey.value) {
+    return setTokenRef.value.toggleDialog(true)
+  }
   messageList.value.push({ role: 'user', content: prompt.value })
   prompt.value = ''
   const unwatch = watch(
@@ -103,9 +111,18 @@ async function handleSearch() {
     },
     { immediate: true } // 立即以当前值触发一次回调
   )
-  await startStream(apiKey.value, currentChatBot.value.value, messageList.value)
-  unwatch()
-  console.log(messageList.value.length)
+  try {
+    await startStream(
+      apiKey.value,
+      currentChatBot.value.value,
+      messageList.value
+    )
+    unwatch()
+    console.log(messageList.value.length)
+  } catch (error) {
+    ElMessage.error('接口请求错误，检查apiKey是否正确')
+    apiKey.value = ''
+  }
 }
 const bottomSentinelRef = ref<HTMLDivElement>()
 const scrollToBottom = () => {

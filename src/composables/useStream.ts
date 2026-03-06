@@ -117,7 +117,7 @@ export function useStream() {
 
               if (dataStr === '[DONE]') {
                 console.log("流式响应自然结束");
-                state.value.fullText = ''
+                
                 return;
               }
 
@@ -145,16 +145,11 @@ export function useStream() {
         }
       }
     } catch (err: any) {
-      if (err.name === 'AbortError') {
-        console.log('请求成功被中止。');
-        state.value.isAborted = true;
-      } else {
-        console.error('请求发生错误:', err);
-        state.value.error = err.message || 'An unknown error occurred';
-      }
+      throw new Error(err);
     } finally {
       state.value.isLoading = false;
       controller.value = null;
+      state.value.fullText = ''
     }
   };
 

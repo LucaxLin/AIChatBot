@@ -9,6 +9,7 @@ declare global {
   const -: typeof import('0')['-']
   const /: typeof import('0')['/']
   const EffectScope: typeof import('vue').EffectScope
+  const ElMessage: typeof import('element-plus/es').ElMessage
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const c: typeof import('0').c
   const computed: typeof import('vue').computed
